@@ -113,15 +113,12 @@ class _MyWalletState extends State<MyWallet> {
       ),
       body: Column(
         children: [
-          PickDate(
-            pickDate: _pickDate,
-            pickedDate: _pickedDate,
-          ),
           ShowCash(
             previousDate: _previousDate,
             nextDate: _nextDate,
             expenses: _expenses,
             picked: _pickedDate,
+            pickDate: _pickDate,
           ),
           SizedBox(height: 40),
           Stack(
