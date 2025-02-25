@@ -18,9 +18,14 @@ class ShowCash extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLastDate = picked.year == DateTime.now().year &&
+        picked.month == DateTime.now().month;
+
+    final isFirstDate = picked.year == 2024 && picked.month == 1;
+
     double totalCost = expenses.getTotalCost(picked);
     return Padding(
-      padding: const EdgeInsets.only(top: 20),
+      padding: const EdgeInsets.only(top: 25, bottom: 40),
       child: Column(
         children: [
           TextButton(
@@ -28,18 +33,20 @@ class ShowCash extends StatelessWidget {
               pickDate(context);
             },
             child: Text(
-              DateFormat.yMMMM().format(picked),
+              DateFormat("MMMM, y").format(picked),
               style: const TextStyle(color: Colors.black, fontSize: 18),
             ),
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Container(
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                    border: Border.all(width: 1.5, color: Colors.grey),
+                    border: Border.all(
+                        width: 1.5,
+                        color: isFirstDate ? Colors.grey : Colors.blue),
                     borderRadius: BorderRadius.circular(20)),
                 child: IconButton(
                   padding: EdgeInsets.all(0.0),
@@ -49,7 +56,7 @@ class ShowCash extends StatelessWidget {
                   icon: Icon(
                     Icons.arrow_left,
                     size: 30,
-                    color: Colors.grey,
+                    color: isFirstDate ? Colors.grey : Colors.blue,
                   ),
                 ),
               ),
@@ -60,7 +67,7 @@ class ShowCash extends StatelessWidget {
                     totalCost.toString(),
                     style: TextStyle(fontSize: 45, fontWeight: FontWeight.w700),
                   ),
-                  Text(
+                  const Text(
                     "so'm",
                     style: TextStyle(
                       fontSize: 25,
@@ -73,7 +80,9 @@ class ShowCash extends StatelessWidget {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                    border: Border.all(width: 1.5, color: Colors.grey),
+                    border: Border.all(
+                        width: 1.5,
+                        color: isLastDate ? Colors.grey : Colors.blue),
                     borderRadius: BorderRadius.circular(20)),
                 child: IconButton(
                   padding: EdgeInsets.all(0.0),
@@ -83,7 +92,7 @@ class ShowCash extends StatelessWidget {
                   icon: Icon(
                     Icons.arrow_right,
                     size: 30,
-                    color: Colors.grey,
+                    color: isLastDate ? Colors.grey : Colors.blue,
                   ),
                 ),
               ),

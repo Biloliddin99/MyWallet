@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:my_wallet/models/expense.dart';
 import 'package:intl/intl.dart';
 
-class ListOfIntake extends StatelessWidget {
+class ExpenseList extends StatelessWidget {
   final List<Expense> expense;
   final DateTime pickedDate;
 
-  const ListOfIntake({
+  const ExpenseList({
     super.key,
     required this.expense,
     required this.pickedDate,
@@ -32,7 +32,7 @@ class ListOfIntake extends StatelessWidget {
               leading: Icon(expense[index].icon),
               title: Text(
                 expense[index].title,
-                style: TextStyle(fontWeight: FontWeight.w700),
+                style: const TextStyle(fontWeight: FontWeight.w700),
               ),
               subtitle: Text(DateFormat.yMMMM().format(pickedDate)),
               trailing: Text(
