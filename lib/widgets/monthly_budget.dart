@@ -1,12 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:my_wallet/models/expense.dart';
+import 'package:my_wallet/widgets/expense_list.dart';
+import './progress.bar.dart';
+import './edit_limit.dart';
 
-class MonthlyBudget extends StatelessWidget {
+class MonthlyBudget extends StatefulWidget {
+  final Expenses expenses;
+  final DateTime picked;
+
   const MonthlyBudget({
     super.key,
+    required this.expenses,
+    required this.picked,
   });
 
   @override
+  State<MonthlyBudget> createState() => _MonthlyBudgetState();
+}
+
+class _MonthlyBudgetState extends State<MonthlyBudget> {
+  double limit = 10000000;
+
+  void changeLimitAmount(double amount) {
+    setState(() {
+      limit = amount;
+    });
+  }
+
+  void changeLimitSheet(BuildContext context) {
+    showModalBottomSheet(
+      isDismissible: false,
+      context: context,
+      shape: BeveledRectangleBorder(),
+      builder: (context) {
+        return EditLimit(
+          changeLimitAmount: changeLimitAmount,
+        );
+      },
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
+    String formattedLimit = NumberFormat("#,###").format(limit);
+    final totalCost = widget.expenses.getTotalCost(widget.picked);
+    final percent = 100 * totalCost / limit;
     return Container(
       padding: EdgeInsets.all(20),
       width: double.infinity,
@@ -27,14 +66,14 @@ class MonthlyBudget extends StatelessWidget {
                 children: [
                   const Text("Oylik budjeti:"),
                   TextButton.icon(
-                    onPressed: () {},
+                    onPressed: () => changeLimitSheet(context),
                     icon: Icon(
                       Icons.edit,
                       size: 17,
                       color: Colors.blue,
                     ),
                     label: Text(
-                      "10,000,000 so'm",
+                      "$formattedLimit so'm",
                       style: TextStyle(
                         color: Colors.blue,
                       ),
@@ -42,48 +81,11 @@ class MonthlyBudget extends StatelessWidget {
                   ),
                 ],
               ),
-              Text("49.4%")
+              Text("${percent.toStringAsFixed(0)} %")
             ],
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 10),
-            child: Container(
-              alignment: Alignment.centerLeft,
-              width: double.infinity,
-              height: 5,
-              decoration: BoxDecoration(
-                color: Color.fromRGBO(206, 214, 239, 1),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: FractionallySizedBox(
-                heightFactor: 2,
-                widthFactor: 0.7,
-                child: Container(
-                  width: double.infinity,
-                  height: 5,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.blue,
-                        Colors.blue,
-                        Colors.blue.shade200,
-                        Colors.blue,
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.blue,
-                        blurRadius: 10,
-                        spreadRadius: -2,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+          ProgressBar(
+            percent: percent,
           ),
         ],
       ),

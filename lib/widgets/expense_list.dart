@@ -17,6 +17,7 @@ class ExpenseList extends StatelessWidget {
     return Positioned(
       bottom: 0,
       child: Container(
+        clipBehavior: Clip.hardEdge,
         height: 520,
         width: MediaQuery.of(context).size.width,
         decoration: const BoxDecoration(
@@ -27,7 +28,13 @@ class ExpenseList extends StatelessWidget {
           ),
         ),
         child: ListView.builder(
+          padding: const EdgeInsets.only(
+            top: 10,
+            right: 5,
+          ),
           itemBuilder: (context, index) {
+            final formattedCost =
+                NumberFormat('#,###').format(expense[index].cost);
             return ListTile(
               leading: Icon(expense[index].icon),
               title: Text(
@@ -36,7 +43,7 @@ class ExpenseList extends StatelessWidget {
               ),
               subtitle: Text(DateFormat.yMMMM().format(pickedDate)),
               trailing: Text(
-                "${expense[index].cost}",
+                "$formattedCost so'm",
                 style: TextStyle(fontSize: 15),
               ),
             );

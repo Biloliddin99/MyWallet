@@ -18,12 +18,12 @@ class ShowCash extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isLastDate = picked.year == DateTime.now().year &&
+    final bool isLastDate = picked.year == DateTime.now().year &&
         picked.month == DateTime.now().month;
-
-    final isFirstDate = picked.year == 2024 && picked.month == 1;
-
+    final bool isFirstDate = picked.year == 2024 && picked.month == 1;
     double totalCost = expenses.getTotalCost(picked);
+    final String cash = NumberFormat('#,###').format(totalCost);
+
     return Padding(
       padding: const EdgeInsets.only(top: 25, bottom: 40),
       child: Column(
@@ -64,7 +64,7 @@ class ShowCash extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    totalCost.toString(),
+                    cash,
                     style: TextStyle(fontSize: 45, fontWeight: FontWeight.w700),
                   ),
                   const Text(

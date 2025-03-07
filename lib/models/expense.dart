@@ -19,9 +19,10 @@ class Expense {
 class Expenses {
   final List<Expense> _list = [
     Expense(id: "01", title: "Laptop", date: DateTime.now(), cost: 5000000),
-    Expense(id: "02", title: "Freezer", date: DateTime.now(), cost: 3200000),
+    Expense(id: "02", title: "Book", date: DateTime.now(), cost: 50000),
     Expense(id: "03", title: "Mouse", date: DateTime.now(), cost: 110000),
     Expense(id: "04", title: "Phone", date: DateTime.now(), cost: 2400000),
+    Expense(id: "05", title: "Tool", date: DateTime.now(), cost: 300000),
   ];
 
   List<Expense> get list {

@@ -128,7 +128,10 @@ class _MyWalletState extends State<MyWallet> {
           ),
           Stack(
             children: [
-              MonthlyBudget(),
+              MonthlyBudget(
+                expenses: _expenses,
+                picked: _pickedDate,
+              ),
               ExpenseList(
                 expense: _expenses.byDate(_pickedDate),
                 pickedDate: _pickedDate,
