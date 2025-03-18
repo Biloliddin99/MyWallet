@@ -13,7 +13,7 @@ class ProgressBar extends StatelessWidget {
         width: double.infinity,
         height: 5,
         decoration: BoxDecoration(
-          color: Color.fromRGBO(206, 214, 239, 1),
+          color: const Color.fromRGBO(206, 214, 239, 1),
           borderRadius: BorderRadius.circular(10),
         ),
         child: FractionallySizedBox(
@@ -33,7 +33,7 @@ class ProgressBar extends StatelessWidget {
                 end: Alignment.bottomRight,
               ),
               borderRadius: BorderRadius.circular(10),
-              boxShadow: [
+              boxShadow: const [
                 BoxShadow(
                   color: Colors.blue,
                   blurRadius: 10,

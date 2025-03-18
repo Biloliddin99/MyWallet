@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:month_year_picker/month_year_picker.dart';
@@ -8,6 +10,14 @@ import './widgets/open_item_sheet.dart';
 import './models/expense.dart';
 
 void main() {
+  /*
+  WidgetsFlutterBinding.ensureInitialized();
+
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitDown,  
+    DeviceOrientation.portraitUp,
+  ]);
+*/
   runApp(const MyApp());
 }
 
@@ -37,6 +47,7 @@ class MyWallet extends StatefulWidget {
 class _MyWalletState extends State<MyWallet> {
   DateTime _pickedDate = DateTime.now();
   final Expenses _expenses = Expenses();
+  bool _showExpenseList = false;
 
   void _pickDate(BuildContext context) {
     showMonthYearPicker(
@@ -72,8 +83,6 @@ class _MyWalletState extends State<MyWallet> {
     });
   }
 
-  void generalSumm() {}
-
   void _showAddItemSheet(BuildContext context) {
     showModalBottomSheet(
         isDismissible: false,
@@ -98,35 +107,30 @@ class _MyWalletState extends State<MyWallet> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blue,
-        actions: [
-          IconButton(
-            color: Colors.white,
-            onPressed: () {
-              _showAddItemSheet(context);
-            },
-            icon: const Icon(Icons.add),
-          ),
-        ],
-        title: const Text(
-          "My Wallet",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400),
-        ),
-      ),
-      body: Column(
-        children: [
-          ShowCash(
+  void deleteExpense(String id) {
+    setState(() {
+      _expenses.delete(id);
+    });
+  }
+
+  Widget _showPortraitItems(deviceHeight, deviceWidth) {
+    return Column(
+      children: [
+        Container(
+          width: deviceWidth,
+          height: deviceHeight > 640 ? deviceHeight * 0.2 : deviceHeight * 0.3,
+          child: ShowCash(
             previousDate: _previousDate,
             nextDate: _nextDate,
             expenses: _expenses,
             picked: _pickedDate,
             pickDate: _pickDate,
           ),
-          Stack(
+        ),
+        Container(
+          width: deviceWidth,
+          height: deviceHeight > 640 ? deviceHeight * 0.8 : deviceHeight * 0.7,
+          child: Stack(
             children: [
               MonthlyBudget(
                 expenses: _expenses,
@@ -135,11 +139,117 @@ class _MyWalletState extends State<MyWallet> {
               ExpenseList(
                 expense: _expenses.byDate(_pickedDate),
                 pickedDate: _pickedDate,
+                deleteExpense: deleteExpense,
               ),
             ],
           ),
-        ],
+        ),
+      ],
+    );
+  }
+
+  Widget _showLandscapeItems(deviceHeight, deviceWidth) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text("Ro'yxatni ko'rsatish"),
+            Switch.adaptive(
+              value: _showExpenseList,
+              onChanged: (value) {
+                setState(() {
+                  _showExpenseList = value;
+                });
+              },
+            ),
+          ],
+        ),
+        _showExpenseList
+            ? Column(
+                children: [
+                  Container(
+                    width: deviceWidth,
+                    height: deviceHeight * 0.9,
+                    child: Stack(
+                      children: [
+                        MonthlyBudget(
+                          expenses: _expenses,
+                          picked: _pickedDate,
+                        ),
+                        ExpenseList(
+                          expense: _expenses.byDate(_pickedDate),
+                          pickedDate: _pickedDate,
+                          deleteExpense: deleteExpense,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              )
+            : Container(
+                width: deviceWidth,
+                height: deviceHeight * 0.9,
+                child: ShowCash(
+                  previousDate: _previousDate,
+                  nextDate: _nextDate,
+                  expenses: _expenses,
+                  picked: _pickedDate,
+                  pickDate: _pickDate,
+                ),
+              ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+
+    final appBar = AppBar(
+      backgroundColor: Colors.blue,
+      actions: Platform.isIOS
+          ? [
+              IconButton(
+                color: Colors.white,
+                onPressed: () {
+                  _showAddItemSheet(context);
+                },
+                icon: const Icon(Icons.add),
+              )
+            ]
+          : [],
+      title: const Text(
+        "My Wallet",
+        style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400),
       ),
+    );
+    final topPadding = MediaQuery.of(context).padding.top;
+    final deviceHeight = MediaQuery.of(context).size.height -
+        appBar.preferredSize.height -
+        topPadding;
+    final deviceWidth = MediaQuery.of(context).size.width;
+    print(Platform.isAndroid);
+    return Scaffold(
+      appBar: appBar,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            isLandscape
+                ? _showLandscapeItems(deviceHeight, deviceWidth)
+                : _showPortraitItems(deviceHeight, deviceWidth),
+          ],
+        ),
+      ),
+      floatingActionButton: Platform.isAndroid
+          ? FloatingActionButton(
+              onPressed: () {
+                _showAddItemSheet(context);
+              },
+              child: Icon(Icons.add),
+            )
+          : Container(),
     );
   }
 }

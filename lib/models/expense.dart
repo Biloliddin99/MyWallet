@@ -59,4 +59,8 @@ class Expenses {
         )
         .toList();
   }
+
+  void delete(String id) {
+    _list.removeWhere((item) => item.id == id);
+  }
 }

@@ -1,9 +1,15 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_iconpicker_plus/flutter_iconpicker.dart';
 import 'package:intl/intl.dart';
+import 'package:my_wallet/widgets/adaptive_button.dart';
+import 'adaptive_textfield.dart';
 
 class OpenItemSheet extends StatefulWidget {
   final Function addPlan;
-  const OpenItemSheet(this.addPlan);
+  const OpenItemSheet(this.addPlan, {super.key});
 
   @override
   State<OpenItemSheet> createState() => _OpenItemSheetState();
@@ -12,7 +18,7 @@ class OpenItemSheet extends StatefulWidget {
 class _OpenItemSheetState extends State<OpenItemSheet> {
   final _nameController = TextEditingController();
   final _expenseController = TextEditingController();
-  IconData _selectedIcon = Icons.ac_unit;
+  IconData? _selectedIcon;
   DateTime? _selectedDate;
 
   void chooseDate(BuildContext context) {
@@ -60,24 +66,37 @@ class _OpenItemSheetState extends State<OpenItemSheet> {
     Navigator.of(context).pop(); // Modal oynani yopadi
   }
 
+  void _showExpenseIconPicker(BuildContext context) {
+    FlutterIconPicker.showIconPicker(context).then((icon) {
+      if (icon == null) {
+        return;
+      }
+      setState(() {
+        _selectedIcon = icon;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
-        padding: EdgeInsets.all(15),
+        padding: const EdgeInsets.all(15),
         width: double.infinity,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            TextField(
-              controller: _nameController,
-              decoration: InputDecoration(labelText: "Xarajat nomi"),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 5),
+              child: AdaptiveTextfield(
+                label: "Xarajat nomi",
+                controller: _nameController,
+              ),
             ),
-            TextField(
-              focusNode: FocusNode()..requestFocus(),
-              keyboardType: TextInputType.number,
+            AdaptiveTextfield(
+              label: "Xarajat miqdori",
               controller: _expenseController,
-              decoration: InputDecoration(labelText: "Xarajat miqdori"),
+              keyboardType: TextInputType.number,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -89,46 +108,42 @@ class _OpenItemSheetState extends State<OpenItemSheet> {
                   onPressed: () {
                     chooseDate(context);
                   },
-                  child: Text("KUNNI TANLASH!"),
+                  child: const Text("KUNNI TANLASH!"),
                 ),
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Icon tanlanmagan"),
+                _selectedIcon == null
+                    ? const Text("Icon tanlanmagan")
+                    : Row(
+                        children: [
+                          const Text("Tanlangan icon: "),
+                          Icon(_selectedIcon, size: 30),
+                        ],
+                      ),
                 TextButton(
-                  onPressed: () {},
-                  child: Text("ICON TANLASH!"),
+                  onPressed: () => _showExpenseIconPicker(context),
+                  child: const Text("ICON TANLASH!"),
                 ),
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                TextButton(
-                  onPressed: () {
+                AdaptiveButton(
+                  label: "BEKOR QILISH",
+                  handler: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text("BEKOR QILISH"),
+                  isFilled: false,
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    submit();
-                  },
-                  child: Text(
-                    "KIRISH",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStatePropertyAll(Colors.blue),
-                    shape: WidgetStatePropertyAll(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  ),
-                ),
+                AdaptiveButton(
+                  label: "KIRITISH",
+                  handler: submit,
+                  isFilled: true,
+                )
               ],
             ),
           ],

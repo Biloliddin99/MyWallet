@@ -25,7 +25,7 @@ class ShowCash extends StatelessWidget {
     final String cash = NumberFormat('#,###').format(totalCost);
 
     return Padding(
-      padding: const EdgeInsets.only(top: 25, bottom: 40),
+      padding: const EdgeInsets.only(top: 20),
       child: Column(
         children: [
           TextButton(
@@ -49,7 +49,7 @@ class ShowCash extends StatelessWidget {
                         color: isFirstDate ? Colors.grey : Colors.blue),
                     borderRadius: BorderRadius.circular(20)),
                 child: IconButton(
-                  padding: EdgeInsets.all(0.0),
+                  padding: const EdgeInsets.all(0.0),
                   onPressed: () {
                     previousDate();
                   },
@@ -65,7 +65,8 @@ class ShowCash extends StatelessWidget {
                 children: [
                   Text(
                     cash,
-                    style: TextStyle(fontSize: 45, fontWeight: FontWeight.w700),
+                    style: const TextStyle(
+                        fontSize: 45, fontWeight: FontWeight.w700),
                   ),
                   const Text(
                     "so'm",
@@ -85,7 +86,7 @@ class ShowCash extends StatelessWidget {
                         color: isLastDate ? Colors.grey : Colors.blue),
                     borderRadius: BorderRadius.circular(20)),
                 child: IconButton(
-                  padding: EdgeInsets.all(0.0),
+                  padding: const EdgeInsets.all(0.0),
                   onPressed: () {
                     nextDate();
                   },
